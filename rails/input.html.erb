@@ -1,0 +1,22 @@
+Enter configuration information
+<hr>
+
+<%= form_for @input do |f| %>
+  <%= f.label :nprizes, 'n prizes:' %>
+  <%= f.text_field :nprizes%><br />
+  <%= f.label :mprizes, 'm prizes:' %>
+  <%= f.text_field :mprizes %><br />
+  <%= f.label :lprizes, 'l prizes:' %>
+  <%= f.text_field :lprizes %><br />
+  <%= f.submit %>
+<% end %>
+Display all input information
+<% if !@inputs.blank? %>
+  <% for item in @inputs %>
+    <%= item.nprizes %> <br />    
+    <%= item.mprizes %> <br />    
+    <%= item.lprizes %> <br />
+  <% end %>
+<% else %>
+
+<% end %>
