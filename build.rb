@@ -5,11 +5,12 @@ require 'pp'
 
 class Build
 
+  # can I do these variable declarations with an attribute?
   @@virtual_stops = 32**3 # [32, 64, 72, 128, 256], industry standards. this is total, cube for per reel.
   def self.virtual_stops
     @@virtual_stops
   end
-  def virtual_stops # instance variable will be accessed by other programs, should just set this fucker to 32
+  def virtual_stops # instance variable
     @virtual_stops = @@virtual_stops
   end
 
@@ -28,19 +29,14 @@ class Build
   m = ConfigSlot.m
   l = ConfigSlot.l
   
-  # could sort here, add a ranking number
-  pp n.payline.sort_by{|key, value| value}
-  pp m.payline.sort_by{|key, value| value}
-  pp l.payline.sort_by{|key, value| value}
-
+  # 1), 2) Map each payline to a virtual reel range, 4) generate pay tab for :nm and :nml tokens, can just remove l pay range
+  # will be overlap between different tokens, DRY
   nml = OpenStruct.new
   nm = OpenStruct.new
   # multiply all probabilities from all pay lines for total win percentage
   nml.win_probability =  n.payline.values.inject(:+) + m.payline.values.inject(:+) + l.payline.values.inject(:+) 
   nm.win_probability =  n.payline.values.inject(:+) + m.payline.values.inject(:+)
 
-  # map to virtual reel range
-  # Upper bound: total probability * virtual_stops - 1 
   # Upper bound of range from zero
   nml.win_upper_bound = virtual_stops * nml.win_probability - 1 
   nm.win_upper_bound  = virtual_stops * nm.win_probability - 1 # -1 to account for RNG beginning from 0
@@ -56,15 +52,16 @@ class Build
     end
   end
 
+  # 3) Output the virtual and interface reel
+  pp n.payline.sort_by{|key, value| value}
+  pp m.payline.sort_by{|key, value| value}
+  pp l.payline.sort_by{|key, value| value}
+  
   def play(token)
-  #  virtual_reel= OpenStruct.new # these need to be constant, do not build this hash every time!
-  #  virtual_reel.range = 0..(virtual_stops**3 - 1)
-    # begin method here
     virtual_reel.random = SecureRandom.random_number(virtual_reel.range.max) 
-    #puts "Random number from virtual reel range:  #{virtual_reel.random}"
     if (token == :nml)
       win(virtual_reel.random, :nml)
-    else # token :nm
+    elsif (token == :nm)
       win(virtual_reel.random, :nm)  
     end
   end
