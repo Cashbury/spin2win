@@ -5,22 +5,19 @@ require 'pp'
 
 class Build < ConfigSlot
 
-  # can I do these variable declarations with an attribute?
   @@virtual_stops = 32**3 # [32, 64, 72, 128, 256], industry standards. this is total, cube for per reel.
   def self.virtual_stops
     @@virtual_stops
   end
-  def virtual_stops # instance variable
+
+  def virtual_stops # accesible for simulate class
     @virtual_stops = @@virtual_stops
   end
-
+  
   @@virtual_reel = OpenStruct.new
   @@virtual_reel.range = 0..(virtual_stops - 1) # to align with RNG
   def self.virtual_reel
     @@virtual_reel
-  end
-  def virtual_reel # should just need instance variable for virtual reel, it will not be accessed by simulation
-    @virtual_reel = @@virtual_reel
   end
 
   # 1), 2) Map each payline to a virtual reel range, 4) generate pay tab for :nm and :nml tokens, can just remove l pay range
@@ -35,16 +32,12 @@ class Build < ConfigSlot
   nml.win_upper_bound = virtual_stops * nml.win_probability - 1 
   nm.win_upper_bound  = virtual_stops * nm.win_probability - 1 # -1 to account for RNG beginning from 0
 
-  # map payline to virtual reel
-   
-
-
-
   virtual_reel.win = Hash.new
   virtual_reel.win[:nml] = 0..nml.win_upper_bound # win condition, remember different token conditions
   virtual_reel.win[:nm] = 0..nm.win_upper_bound
+  
   def win(random_number, token)
-    if virtual_reel.win[token] === random_number # range contains integer
+    if @@virtual_reel.win[token] === random_number # range contains integer
       return :win
     else
       return :lose
@@ -57,11 +50,11 @@ class Build < ConfigSlot
   pp l.payline.sort_by{|key, value| value}
   
   def play(token)
-    virtual_reel.random = SecureRandom.random_number(virtual_reel.range.max) 
+    random_number = SecureRandom.random_number(@@virtual_reel.range.max) 
     if (token == :nml)
-      win(virtual_reel.random, :nml)
+      win(random_number, :nml)
     elsif (token == :nm)
-      win(virtual_reel.random, :nm)  
+      win(random_number, :nm)  
     end
   end
   
