@@ -3,7 +3,7 @@ require 'ostruct'
 require 'securerandom'
 require 'pp'
 
-class Build
+class Build < ConfigSlot
 
   # can I do these variable declarations with an attribute?
   @@virtual_stops = 32**3 # [32, 64, 72, 128, 256], industry standards. this is total, cube for per reel.
@@ -23,12 +23,6 @@ class Build
     @virtual_reel = @@virtual_reel
   end
 
-  # access pay line table probability, map to virtual reel. build loser line table, equal probabilities to reach 1.0.
-  # This is the access to payline tables
-  n = ConfigSlot.n
-  m = ConfigSlot.m
-  l = ConfigSlot.l
-  
   # 1), 2) Map each payline to a virtual reel range, 4) generate pay tab for :nm and :nml tokens, can just remove l pay range
   # will be overlap between different tokens, DRY
   nml = OpenStruct.new
@@ -40,6 +34,11 @@ class Build
   # Upper bound of range from zero
   nml.win_upper_bound = virtual_stops * nml.win_probability - 1 
   nm.win_upper_bound  = virtual_stops * nm.win_probability - 1 # -1 to account for RNG beginning from 0
+
+  # map payline to virtual reel
+   
+
+
 
   virtual_reel.win = Hash.new
   virtual_reel.win[:nml] = 0..nml.win_upper_bound # win condition, remember different token conditions

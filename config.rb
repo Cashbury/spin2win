@@ -58,11 +58,11 @@ class ConfigSlot
   # 5) Assign or auto-assign the prize to an available payline in the group
   # from form in View, assign prize to payline :n1, etc.
 
-  # 6) coin distribution definition, use percentages
+  # 6) coin distribution definition, use percentages, see new info
   token = OpenStruct.new
   token.nml_percentage = 1.0
   token.nm_percentage  = 0.0
- 
+  
   # Class variables
   @@n = n
   def self.n 
@@ -76,5 +76,4 @@ class ConfigSlot
   def self.l 
     @@l
   end
-
 end
