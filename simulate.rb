@@ -41,10 +41,11 @@ game_cycle.nm.times do #game_cycle.nm.times do
 end
 
 # 3) Output the simulation result feed and analysis (tbd)
-puts "Total number of wins: #{wins}"
-puts "Total number of losses: #{losses}"
-puts "Win probability is #{wins / Float(game_cycle.sample_size)}"
-puts "Loss probability is #{losses / Float(game_cycle.sample_size)}"
+output = File.new('output.html', 'w')
+output.puts "<p>Total number of wins: #{wins}</p>"
+output.puts "<p>Total number of losses: #{losses}</p>"
+output.puts "<p>Win probability is #{wins / Float(game_cycle.sample_size)}</p>"
+output.puts "<p>Loss probability is #{losses / Float(game_cycle.sample_size)}</p>"
 
 # simulation.report
 # play feed, variance analysis, total cost to business, number of prizes granted
