@@ -16,19 +16,12 @@ class Build < ConfigSlot
   
   @@virtual_reel = OpenStruct.new
   @@virtual_reel.range = 0..(virtual_stops - 1) # to align with RNG
- 
+
+#### Update with each pay line in mind
   n.win_probability = n.payline_prob.values.inject(:+)
   m.win_probability = m.payline_prob.values.inject(:+)
   l.win_probability = l.payline_prob.values.inject(:+)
 
-  # length of probability range on virtual reel
-  n.payline_length = Hash.new
-  m.payline_length = Hash.new
-  l.payline_length = Hash.new
-  n.payline_prob.each_key { |key, value| n.payline_length[key] = Integer(virtual_stops * n.payline_prob[key]) }
-  m.payline_prob.each_key { |key, value| m.payline_length[key] = Integer(virtual_stops * m.payline_prob[key]) }
-  l.payline_prob.each_key { |key, value| l.payline_length[key] = Integer(virtual_stops * l.payline_prob[key]) }
-  
   win_upper_bound = Hash.new
   win_upper_bound[:nml] = virtual_stops * (n.win_probability + m.win_probability + l.win_probability) - 1
   win_upper_bound[:nm]  = virtual_stops * (n.win_probability + m.win_probability) - 1
@@ -42,6 +35,50 @@ class Build < ConfigSlot
       return :win
     else
       return :lose
+    end
+  end
+####
+
+  # length of probability range on virtual reel
+  n.payline_length = Hash.new
+  m.payline_length = Hash.new
+  l.payline_length = Hash.new
+  n.payline_prob.each_key { |key, value| n.payline_length[key] = Integer(virtual_stops * n.payline_prob[key]) }
+  m.payline_prob.each_key { |key, value| m.payline_length[key] = Integer(virtual_stops * m.payline_prob[key]) }
+  l.payline_prob.each_key { |key, value| l.payline_length[key] = Integer(virtual_stops * l.payline_prob[key]) }
+
+  n.virtual_reel_map = Hash.new
+  m.virtual_reel_map = Hash.new
+  l.virtual_reel_map = Hash.new
+
+  start = 0
+  n.payline_length.each_key { 
+    |key, value| 
+    n.virtual_reel_map[key] = start..(start + n.payline_length[key]-1)
+    start = start + n.payline_length[key]
+    p n.virtual_reel_map[key]
+ }
+  m.payline_length.each_key { 
+    |key, value| 
+    m.virtual_reel_map[key] = start..(start + m.payline_length[key]-1)
+    start = start + m.payline_length[key]
+    p m.virtual_reel_map[key]
+  }
+  l.payline_length.each_key { 
+    |key, value| 
+    l.virtual_reel_map[key] = start..(start + l.payline_length[key]-1)
+    start = start + l.payline_length[key]
+    p l.virtual_reel_map[key]
+  }
+
+  def win_mod(random_number, token)
+    if    token == :n
+    # see if random_number is in any n winning prize ranges, forget individual losing ranges for the time being
+    # switch or case statement? Hash with range keys?
+    elsif token == :nm
+    # see if random_number is in any n or m winning prize ranges 
+    elsif token == :nml
+    # see if random_number is in any n, m, or l winning prize ranges 
     end
   end
 
