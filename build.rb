@@ -17,10 +17,18 @@ class Build < ConfigSlot
   @@virtual_reel = OpenStruct.new
   @@virtual_reel.range = 0..(virtual_stops - 1) # to align with RNG
  
-  n.win_probability = n.payline.values.inject(:+)
-  m.win_probability = m.payline.values.inject(:+)
-  l.win_probability = l.payline.values.inject(:+)
+  n.win_probability = n.payline_prob.values.inject(:+)
+  m.win_probability = m.payline_prob.values.inject(:+)
+  l.win_probability = l.payline_prob.values.inject(:+)
 
+  # length of probability range on virtual reel
+  n.payline_length = Hash.new
+  m.payline_length = Hash.new
+  l.payline_length = Hash.new
+  n.payline_prob.each_key { |key, value| n.payline_length[key] = Integer(virtual_stops * n.payline_prob[key]) }
+  m.payline_prob.each_key { |key, value| m.payline_length[key] = Integer(virtual_stops * m.payline_prob[key]) }
+  l.payline_prob.each_key { |key, value| l.payline_length[key] = Integer(virtual_stops * l.payline_prob[key]) }
+  
   win_upper_bound = Hash.new
   win_upper_bound[:nml] = virtual_stops * (n.win_probability + m.win_probability + l.win_probability) - 1
   win_upper_bound[:nm]  = virtual_stops * (n.win_probability + m.win_probability) - 1
@@ -38,9 +46,9 @@ class Build < ConfigSlot
   end
 
   # 3) Output the virtual and interface reel
-  pp n.payline.sort_by{|key, value| value}
-  pp m.payline.sort_by{|key, value| value}
-  pp l.payline.sort_by{|key, value| value}
+  #pp n.payline.sort_by{|key, value| value}
+  #pp m.payline.sort_by{|key, value| value}
+  #pp l.payline.sort_by{|key, value| value}
   
   def play(token)
     random_number = SecureRandom.random_number(@@virtual_reel.range.max) 
