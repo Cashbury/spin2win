@@ -4,11 +4,20 @@ require 'ostruct'
 # Input from this file will be received from view, sent to controller, and then to this file.
 
 class ConfigSlot
-  
-  n = OpenStruct.new
-  m = OpenStruct.new
-  l = OpenStruct.new
-  
+  # Class variables
+  @@n = OpenStruct.new
+  def self.n 
+    @@n
+  end
+  @@m = OpenStruct.new
+  def self.m 
+    @@m
+  end
+  @@l = OpenStruct.new
+  def self.l 
+    @@l
+  end
+
   # 1) Define the maximum number of prizes for each prize category
   n.prize_total = 2
   m.prize_total = 2
@@ -63,17 +72,4 @@ class ConfigSlot
   token.nml_percentage = 1.0
   token.nm_percentage  = 0.0
   
-  # Class variables
-  @@n = n
-  def self.n 
-    @@n
   end
-  @@m = m
-  def self.m 
-    @@m
-  end
-  @@l = l
-  def self.l 
-    @@l
-  end
-end
