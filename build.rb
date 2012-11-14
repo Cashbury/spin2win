@@ -16,25 +16,18 @@ class Build < ConfigSlot
   
   @@virtual_reel = OpenStruct.new
   @@virtual_reel.range = 0..(virtual_stops - 1) # to align with RNG
-  def self.virtual_reel
-    @@virtual_reel
-  end
+ 
+  n.win_probability = n.payline.values.inject(:+)
+  m.win_probability = m.payline.values.inject(:+)
+  l.win_probability = l.payline.values.inject(:+)
 
-  # 1), 2) Map each payline to a virtual reel range, 4) generate pay tab for :nm and :nml tokens, can just remove l pay range
-  # will be overlap between different tokens, DRY
-  nml = OpenStruct.new
-  nm = OpenStruct.new
-  # multiply all probabilities from all pay lines for total win percentage
-  nml.win_probability =  n.payline.values.inject(:+) + m.payline.values.inject(:+) + l.payline.values.inject(:+) 
-  nm.win_probability =  n.payline.values.inject(:+) + m.payline.values.inject(:+)
+  win_upper_bound = Hash.new
+  win_upper_bound[:nml] = virtual_stops * (n.win_probability + m.win_probability + l.win_probability) - 1
+  win_upper_bound[:nm]  = virtual_stops * (n.win_probability + m.win_probability) - 1
 
-  # Upper bound of range from zero
-  nml.win_upper_bound = virtual_stops * nml.win_probability - 1 
-  nm.win_upper_bound  = virtual_stops * nm.win_probability - 1 # -1 to account for RNG beginning from 0
-
-  virtual_reel.win = Hash.new
-  virtual_reel.win[:nml] = 0..nml.win_upper_bound # win condition, remember different token conditions
-  virtual_reel.win[:nm] = 0..nm.win_upper_bound
+  @@virtual_reel.win = Hash.new
+  @@virtual_reel.win[:nml] = 0..win_upper_bound[:nml] # win condition, remember different token conditions
+  @@virtual_reel.win[:nm] = 0..win_upper_bound[:nm]
   
   def win(random_number, token)
     if @@virtual_reel.win[token] === random_number # range contains integer
