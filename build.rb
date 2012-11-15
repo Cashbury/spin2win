@@ -17,28 +17,6 @@ class Build < ConfigSlot
   @@virtual_reel = OpenStruct.new
   @@virtual_reel.range = 0..(virtual_stops - 1) # to align with RNG
 
-#### Update with each pay line in mind
-  n.win_probability = n.payline_prob.values.inject(:+)
-  m.win_probability = m.payline_prob.values.inject(:+)
-  l.win_probability = l.payline_prob.values.inject(:+)
-
-  win_upper_bound = Hash.new
-  win_upper_bound[:nml] = virtual_stops * (n.win_probability + m.win_probability + l.win_probability) - 1
-  win_upper_bound[:nm]  = virtual_stops * (n.win_probability + m.win_probability) - 1
-
-  @@virtual_reel.win = Hash.new
-  @@virtual_reel.win[:nml] = 0..win_upper_bound[:nml] # win condition, remember different token conditions
-  @@virtual_reel.win[:nm] = 0..win_upper_bound[:nm]
-  
-  def win(random_number, token)
-    if @@virtual_reel.win[token] === random_number # range contains integer
-      return :win
-    else
-      return :lose
-    end
-  end
-####
-
   # length of probability range on virtual reel
   n.payline_length = Hash.new
   m.payline_length = Hash.new
@@ -70,7 +48,7 @@ class Build < ConfigSlot
     p @@l.virtual_reel_map[key]
   }
 
-  def win_mod(random_number, token)
+  def win?(random_number, token)
     if    token == :n
       n_check(random_number)
     elsif token == :nm
@@ -83,7 +61,7 @@ class Build < ConfigSlot
     end
   end
 
-@@wins = 0
+  @@wins = 0
   def n_check(random_number)
     @@n.virtual_reel_map.each {
       |key, value|
@@ -115,9 +93,9 @@ class Build < ConfigSlot
     }
   end
 
-def win_count 
- @wins = @@wins
-end
+  def win_count 
+   @wins = @@wins
+  end
 
 =begin
   def prize_check
@@ -132,9 +110,9 @@ end
   def play(token)
     random_number = SecureRandom.random_number(@@virtual_reel.range.max) 
     if (token == :nml)
-      win_mod(random_number, :nml)
+      win?(random_number, :nml)
     elsif (token == :nm)
-      win(random_number, :nm)  
+      win?(random_number, :nm)  
     end
   end
   
