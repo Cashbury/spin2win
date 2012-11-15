@@ -43,17 +43,29 @@ class Simulate
 
   # 3) Output the simulation result feed and analysis (tbd)
   output = File.new('output.html', 'w')
-  output.puts "<p>Total number of wins: #{wins}</p>"
-  output.puts "<p>Total number of losses: #{losses}</p>"
+ 
+ output.puts "<p>Total number of wins: #{wins}</p>"
+  output.puts"<p>Total number of losses: #{losses}</p>"
   output.puts "<p>Win probability is #{wins / Float(game_cycle.sample_size)}</p>"
   output.puts "<p>Loss probability is #{losses / Float(game_cycle.sample_size)}</p>"
+  
+  output.puts "<p> N prize paylines' win count: #{game_build.n_payline_wins} </p>"
+  game_build.n_payline_wins.each { |key, value| output.puts "<p> Experimental probability for payline #{key}: #{value / Float(game_cycle.sample_size)} </p>" } 
 
+  output.puts "<p> M prize paylines' win count: #{game_build.m_payline_wins} </p>"
+  game_build.m_payline_wins.each { |key, value| output.puts "<p> Experimental probability for payline #{key}: #{value / Float(game_cycle.sample_size)} </p>" } 
+ 
+  output.puts "<p> L prize paylines' win count: #{game_build.l_payline_wins} </p>"
+  game_build.l_payline_wins.each { |key, value| output.puts "<p> Experimental probability for payline #{key}: #{value / Float(game_cycle.sample_size)} </p>" } 
+ 
+  output.close
+  
+  game_build.win_count_total
   # simulation.report
   # play feed, variance analysis, total cost to business, number of prizes granted
   # for each prize from the business:
   # number of prizes won by customers for a total cost of $
   # etc. see lexicon
-  p game_build.win_count
 
   end
 

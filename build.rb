@@ -61,6 +61,14 @@ class Build < ConfigSlot
     end
   end
 
+  # keep track of individual payline wins
+  @@n.wins = Hash.new(0)
+  @@m.wins = Hash.new(0)
+  @@l.wins = Hash.new(0)
+
+
+
+### The following methods check paylines for a win
   @@wins = 0
   def n_check(random_number)
     @@n.virtual_reel_map.each {
@@ -68,7 +76,8 @@ class Build < ConfigSlot
       if @@n.virtual_reel_map[key] === random_number
         #p "win with #{key} #{random_number} #{value}"
         @@wins = @@wins + 1
-        return nil
+        @@n.wins[key] = @@n.wins[key] + 1 
+        return :win
       end
     }
   end
@@ -78,7 +87,8 @@ class Build < ConfigSlot
       if @@m.virtual_reel_map[key] === random_number
         #p "win with #{key}"
         @@wins = @@wins + 1
-        return nil
+        @@m.wins[key] = @@m.wins[key] + 1 
+        return :win
       end
     }
   end
@@ -88,13 +98,25 @@ class Build < ConfigSlot
       if @@l.virtual_reel_map[key] === random_number
         #p "win with #{key}"
         @@wins = @@wins + 1
-        return nil
+        @@l.wins[key] = @@l.wins[key] + 1 
+        return :win
       end
     }
   end
+###
 
-  def win_count 
-   @wins = @@wins
+  def n_payline_wins
+     @@n.wins
+  end
+  def m_payline_wins
+     @@m.wins
+  end
+  def l_payline_wins
+     @@l.wins
+  end
+
+  def win_count_total 
+     @@wins
   end
 
 =begin
