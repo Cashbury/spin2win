@@ -53,6 +53,7 @@ class Simulate
   # for each prize from the business:
   # number of prizes won by customers for a total cost of $
   # etc. see lexicon
+  p game_build.win_count
 
   end
 
