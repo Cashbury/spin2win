@@ -58,9 +58,20 @@ class ConfigSlot
   n.prize = Hash.new
   m.prize = Hash.new
   l.prize = Hash.new
-  n.prize[:n1] = [ business_name: 'foo', prize_value: 1, prize_cost: 1,
+
+  # need a loop to semi-automate this for testing purposes
+  for i in 1..n.prize_total
+    n.prize[:"n#{i}"] = [ business_name: 'cashbury', prize_value: 1, prize_cost: 1,
                       prize_group: 'n', max_spend: 1, max_quantity: 1 ]
-  # add a few more generics
+  end
+  for i in 1..m.prize_total
+    m.prize[:"m#{i}"] = [  business_name: 'blue bottle', prize_value: 1, prize_cost: 1,
+                      prize_group: 'm', max_spend: 1, max_quantity: 1 ]
+  end
+  for i in 1..l.prize_total
+    l.prize[:"l#{i}"] = [  business_name: 'starbucks', prize_value: 1, prize_cost: 1,
+                      prize_group: 'l', max_spend: 1, max_quantity: 1 ]
+  end
 
   # 5) Assign or auto-assign the prize to an available payline in the group
   # from form in View, assign prize to payline :n1, etc.

@@ -41,10 +41,14 @@ class Simulate
     end
   end
 
-  # 3) Output the simulation result feed and analysis (tbd)
+  # 3) Output the simulation result feed and analysis interface and virtual reel
+  # virtual reel
+  game_build.output_virtual_reel
+
+  #Simulation result feed
   output = File.new('output.html', 'w')
  
- output.puts "<p>Total number of wins: #{wins}</p>"
+  output.puts "<p>Total number of wins: #{wins}</p>"
   output.puts"<p>Total number of losses: #{losses}</p>"
   output.puts "<p>Win probability is #{wins / Float(game_cycle.sample_size)}</p>"
   output.puts "<p>Loss probability is #{losses / Float(game_cycle.sample_size)}</p>"
