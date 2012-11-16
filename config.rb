@@ -39,7 +39,7 @@ class ConfigSlot
   m.symbols = Array.new
   l.symbols = Array.new
 
-  # 2,3
+  # Setting symbols and defining paylines
   for i in 1..n.prize_total
     n.payline_prob[:"n#{i}"] = n.payline_prob_array[i-1]
     n.symbols.push :"n#{i}" 
