@@ -25,41 +25,39 @@ class Build < ConfigSlot
   m.payline_prob.each_key { |key, value| m.payline_length[key] = Integer(virtual_stops * m.payline_prob[key]) }
   l.payline_prob.each_key { |key, value| l.payline_length[key] = Integer(virtual_stops * l.payline_prob[key]) }
 
-  @@n.virtual_reel_map = Hash.new
-  @@m.virtual_reel_map = Hash.new
-  @@l.virtual_reel_map = Hash.new
+  # winning virtual reel map
+  @@n.virtual_reel_win_map = Hash.new
+  @@m.virtual_reel_win_map = Hash.new
+  @@l.virtual_reel_win_map = Hash.new
   start = 0
   n.payline_length.each_key { 
     |key| 
-    @@n.virtual_reel_map[key] = start..(start + n.payline_length[key]-1)
+    @@n.virtual_reel_win_map[key] = start..(start + n.payline_length[key]-1)
     start = start + n.payline_length[key]
-    #p @@n.virtual_reel_map[key]
  }
   m.payline_length.each_key { 
     |key| 
-    @@m.virtual_reel_map[key] = start..(start + m.payline_length[key]-1)
+    @@m.virtual_reel_win_map[key] = start..(start + m.payline_length[key]-1)
     start = start + m.payline_length[key]
-    #p @@m.virtual_reel_map[key]
   }
   l.payline_length.each_key { 
     |key| 
-    @@l.virtual_reel_map[key] = start..(start + l.payline_length[key]-1)
+    @@l.virtual_reel_win_map[key] = start..(start + l.payline_length[key]-1)
     start = start + l.payline_length[key]
-    #p @@l.virtual_reel_map[key]
   }
 
 #### Virtual reel output
   def output_virtual_reel
     output = File.new('virtual_reel.html', 'w')
     output.puts "<p> Whole range: #{@@virtual_reel.range} </p>"
-    @@n.virtual_reel_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
-    @@m.virtual_reel_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
-    @@l.virtual_reel_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
+    @@n.virtual_reel_win_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
+    @@m.virtual_reel_win_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
+    @@l.virtual_reel_win_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
+    # virtual_reel_lose_map
     output.close
   end
 
 ### Interface reel output 
-# space symbol space symbol space symbol
   def output_interface_reel
     output = File.new('interface_reel.html', 'w')
     output.puts "<p> Each reel is the same, they look like following: <p>"
@@ -69,7 +67,6 @@ class Build < ConfigSlot
                                  end }
     output.puts "</p>"
   end
-###
 
   def win?(random_number, token)
     if    token == :n
@@ -103,9 +100,9 @@ class Build < ConfigSlot
 ## The following methods check paylines for a win
   @@wins = 0
   def n_check(random_number)
-    @@n.virtual_reel_map.each {
+    @@n.virtual_reel_win_map.each {
       |key, value|
-      if @@n.virtual_reel_map[key] === random_number
+      if @@n.virtual_reel_win_map[key] === random_number
         #p "win with #{key} #{random_number} #{value}"
         @@wins = @@wins + 1
         @@n.wins[key] = @@n.wins[key] + 1 
@@ -114,9 +111,9 @@ class Build < ConfigSlot
     }
   end
   def m_check(random_number)
-    @@m.virtual_reel_map.each {
+    @@m.virtual_reel_win_map.each {
       |key, value|
-      if @@m.virtual_reel_map[key] === random_number
+      if @@m.virtual_reel_win_map[key] === random_number
         #p "win with #{key}"
         @@wins = @@wins + 1
         @@m.wins[key] = @@m.wins[key] + 1 
@@ -125,9 +122,9 @@ class Build < ConfigSlot
     }
   end
   def l_check(random_number)
-    @@l.virtual_reel_map.each {
+    @@l.virtual_reel_win_map.each {
       |key, value|
-      if @@l.virtual_reel_map[key] === random_number
+      if @@l.virtual_reel_win_map[key] === random_number
         #p "win with #{key}"
         @@wins = @@wins + 1
         @@l.wins[key] = @@l.wins[key] + 1 
