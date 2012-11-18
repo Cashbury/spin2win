@@ -30,7 +30,6 @@ class ConfigSlot
 
   # 2) Set the symbols needed to run the game
   symbol_count = n.prize_total + m.prize_total + l.prize_total + 1 
-  symbol = Hash.new
   for i in 1..symbol_count
     symbol[:"s#{i}"] = nil # symbol assignment, e.g. '7' 
   end
@@ -56,7 +55,7 @@ class ConfigSlot
   m.symbol = Hash.new
   l.symbol = Hash.new
 
-  # Setting symbols and defining paylines
+  # Setting symbols and defining paylines, triple of assigned symbol to payline is the winner
   for i in 1..n.prize_total
     n.payline_prob[:"n#{i}"] = n.payline_prob_array[i-1]
     n.symbol[:"n#{i}"] = :"s#{i+1}"  # i + 1 to skip over space

@@ -33,20 +33,43 @@ class Build < ConfigSlot
     |key| 
     @@n.virtual_reel_map[key] = start..(start + n.payline_length[key]-1)
     start = start + n.payline_length[key]
-    p @@n.virtual_reel_map[key]
+    #p @@n.virtual_reel_map[key]
  }
   m.payline_length.each_key { 
     |key| 
     @@m.virtual_reel_map[key] = start..(start + m.payline_length[key]-1)
     start = start + m.payline_length[key]
-    p @@m.virtual_reel_map[key]
+    #p @@m.virtual_reel_map[key]
   }
   l.payline_length.each_key { 
     |key| 
     @@l.virtual_reel_map[key] = start..(start + l.payline_length[key]-1)
     start = start + l.payline_length[key]
-    p @@l.virtual_reel_map[key]
+    #p @@l.virtual_reel_map[key]
   }
+
+#### Virtual reel output
+  def output_virtual_reel
+    output = File.new('virtual_reel.html', 'w')
+    output.puts "<p> Whole range: #{@@virtual_reel.range} </p>"
+    @@n.virtual_reel_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
+    @@m.virtual_reel_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
+    @@l.virtual_reel_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
+    output.close
+  end
+
+### Interface reel output 
+# space symbol space symbol space symbol
+  def output_interface_reel
+    output = File.new('interface_reel.html', 'w')
+    output.puts "<p> Each reel is the same, they look like following: <p>"
+    output.print "<p>"
+    @@symbol.each { |key, value| unless(key==:s1)
+                                  output.print " #{value} #{@@symbol[:s1]}" 
+                                 end }
+    output.puts "</p>"
+  end
+###
 
   def win?(random_number, token)
     if    token == :n
@@ -67,8 +90,17 @@ class Build < ConfigSlot
   @@l.wins = Hash.new(0)
 
 
+  def n_payline_theoretical(payline_key)
+    @@n.payline_prob[payline_key]
+  end
+  def m_payline_theoretical(payline_key)
+    @@m.payline_prob[payline_key]
+  end
+  def l_payline_theoretical(payline_key)
+    @@l.payline_prob[payline_key]
+  end
 
-### The following methods check paylines for a win
+## The following methods check paylines for a win
   @@wins = 0
   def n_check(random_number)
     @@n.virtual_reel_map.each {
@@ -124,11 +156,6 @@ class Build < ConfigSlot
   end
 =end
 
-  # 3) Output the virtual and interface reel
-  #pp n.payline.sort_by{|key, value| value}
-  #pp m.payline.sort_by{|key, value| value}
-  #pp l.payline.sort_by{|key, value| value}
-  
   def play(token)
     random_number = SecureRandom.random_number(@@virtual_reel.range.max) 
     if (token == :nml)

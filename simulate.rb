@@ -44,6 +44,7 @@ class Simulate
   # 3) Output the simulation result feed and analysis interface and virtual reel
   # virtual reel
   game_build.output_virtual_reel
+  game_build.output_interface_reel
 
   #Simulation result feed
   output = File.new('output.html', 'w')
