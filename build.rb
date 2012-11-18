@@ -146,7 +146,8 @@ class Build < ConfigSlot
       if @@n.virtual_reel_win_map[key] === random_number
         #p "win with #{key} #{random_number} #{value}"
         @@wins = @@wins + 1
-        @@n.wins[key] = @@n.wins[key] + 1 
+        @@n.wins[key] = @@n.wins[key] + 1
+        #puts "Prize #{key} won: #{@@n.prize[key]}"
         return :win
       end
     }
@@ -158,6 +159,7 @@ class Build < ConfigSlot
         #p "win with #{key}"
         @@wins = @@wins + 1
         @@m.wins[key] = @@m.wins[key] + 1 
+        #puts "Prize #{key} won: #{@@m.prize[key]}"
         return :win
       end
     }
@@ -169,6 +171,7 @@ class Build < ConfigSlot
         #p "win with #{key}"
         @@wins = @@wins + 1
         @@l.wins[key] = @@l.wins[key] + 1 
+        #puts "Prize #{key} won: #{@@l.prize[key]}"
         return :win
       end
     }
@@ -187,6 +190,13 @@ class Build < ConfigSlot
 
   def win_count_total 
      @@wins
+  end
+
+  def user
+    @@user
+  end
+  def credit
+    @@credit
   end
 
 =begin

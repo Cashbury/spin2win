@@ -93,15 +93,32 @@ class ConfigSlot
   # from form in View, assign prize to payline :n1, etc.
 
   # 6) coin distribution and user definition, use percentages, see new info
-  user = OpenStruct.new
-  user.count = 100 # can change, a percentage of the user population will contain a percentage of the credits. generate distribution and users dynamically.
-  user.credit_distribution = Hash.new
-  for i in 1..user.count
-    user.credit_distribution[:"u#{i}"] = [ n: 0.2, nm: 0.6, nml: 0.2 ]
+  @@user = OpenStruct.new
+  def self.user
+    @@user
   end
-
-  credit = OpenStruct.new
+  user.count = 100 # can change, a percentage of the user population will contain a percentage of the credits. generate distribution and users dynamically.
+  user.n_credits = Hash.new
+  user.nm_credits = Hash.new
+  user.nml_credits = Hash.new
+  user.win_types = Hash.new
+  @@credit = OpenStruct.new
+  def self.credit
+    @@credit
+  end
+  credit.distribution = Hash.new
+  credit.distribution[:n] = 0.2 
+  credit.distribution[:nm] = 0.6
+  credit.distribution[:nml] = 0.2
   credit.rate_per_day = 1000
+  for i in 1..user.count
+    user.n_credits[:"u#{i}"]   = credit.rate_per_day / user.count * credit.distribution[:n]
+    user.nm_credits[:"u#{i}"]  = credit.rate_per_day / user.count * credit.distribution[:nm]
+    user.nml_credits[:"u#{i}"] = credit.rate_per_day / user.count * credit.distribution[:nml]
+    user.win_types[:"u#{i}"] = Array.new # push payline of win here
+  end
+  
+
 
 =begin
   token = OpenStruct.new
