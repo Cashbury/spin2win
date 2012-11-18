@@ -25,6 +25,8 @@ class Build < ConfigSlot
   m.payline_prob.each_key { |key, value| m.payline_length[key] = Integer(virtual_stops * m.payline_prob[key]) }
   l.payline_prob.each_key { |key, value| l.payline_length[key] = Integer(virtual_stops * l.payline_prob[key]) }
 
+
+
   # winning virtual reel map
   @@n.virtual_reel_win_map = Hash.new
   @@m.virtual_reel_win_map = Hash.new
@@ -45,6 +47,28 @@ class Build < ConfigSlot
     @@l.virtual_reel_win_map[key] = start..(start + l.payline_length[key]-1)
     start = start + l.payline_length[key]
   }
+  # generate all symbol combinations, even probability for all losing combinations, 
+  loseline = OpenStruct.new
+  loseline.probability_total = 1 - (@@n.payline_prob_array.inject(:+) + @@m.payline_prob_array.inject(:+) + @@l.payline_prob_array.inject(:+)) 
+  puts "loseline probability: #{loseline.probability_total}"
+  loseline.total_number_of = @@symbol.keys.length ** 3 - @@n.prize_total - @@m.prize_total - @@l.prize_total
+  puts "total number of loselines: #{loseline.total_number_of}"
+  loseline.individual_probability = loseline.probability_total / Float(loseline.total_number_of)
+  puts "individual probability for each loseline: #{loseline.individual_probability}"
+  loseline.reel_length_individual = Integer(virtual_stops * loseline.individual_probability)
+  puts loseline.reel_length_individual
+  @@virtual_reel_lose_map = Hash.new
+  def self.virtual_reel_lose_map
+    @@virtual_reel_lose_map
+  end
+  for i in 1..loseline.total_number_of
+    if i != loseline.total_number_of # need to extend last loseline to end of range
+      @@virtual_reel_lose_map[:"lose#{i}"] = start..(start + loseline.reel_length_individual - 1)
+      start = start + loseline.reel_length_individual
+    else 
+      @@virtual_reel_lose_map[:"lose#{i}"] = start..(@@virtual_reel.range.max)
+    end
+  end
 
 #### Virtual reel output
   def output_virtual_reel
@@ -53,7 +77,7 @@ class Build < ConfigSlot
     @@n.virtual_reel_win_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
     @@m.virtual_reel_win_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
     @@l.virtual_reel_win_map.each { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
-    # virtual_reel_lose_map
+    @@virtual_reel_lose_map.each  { |key, value| output.puts "<p> Range for #{key}: #{value} </p>" }
     output.close
   end
 
