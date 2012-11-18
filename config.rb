@@ -59,18 +59,18 @@ class ConfigSlot
   m.prize = Hash.new
   l.prize = Hash.new
 
-  # need a loop to semi-automate this for testing purposes
+  # prize definitions
   for i in 1..n.prize_total
-    n.prize[:"n#{i}"] = [ business_name: 'cashbury', prize_value: 1, prize_cost: 1,
-                      prize_group: 'n', max_spend: 1, max_quantity: 1 ]
+    n.prize[:"n#{i}"] = [ business_name: 'cashbury', prize_value: 5, prize_cost: 1,
+                      prize_group: 'n', prize_type: 'item', max_spend: 1, max_quantity: 1 ]
   end
   for i in 1..m.prize_total
-    m.prize[:"m#{i}"] = [  business_name: 'blue bottle', prize_value: 1, prize_cost: 1,
-                      prize_group: 'm', max_spend: 1, max_quantity: 1 ]
+    m.prize[:"m#{i}"] = [  business_name: 'blue bottle', prize_value: 3, prize_cost: 1,
+                      prize_group: 'm', prize_type: 'item', max_spend: 1, max_quantity: 1 ]
   end
   for i in 1..l.prize_total
-    l.prize[:"l#{i}"] = [  business_name: 'starbucks', prize_value: 1, prize_cost: 1,
-                      prize_group: 'l', max_spend: 1, max_quantity: 1 ]
+    l.prize[:"l#{i}"] = [  business_name: 'starbucks', prize_value: 2, prize_cost: 1,
+                      prize_group: 'l', prize_type: 'credit', max_spend: 1, max_quantity: 1 ]
   end
 
   # 5) Assign or auto-assign the prize to an available payline in the group
@@ -78,7 +78,7 @@ class ConfigSlot
 
   # 6) coin distribution and user definition, use percentages, see new info
   user = OpenStruct.new
-  user.count = 100
+  user.count = 100 # can change, a percentage of the user population will contain a percentage of the credits. generate distribution and users dynamically.
   user.credit_distribution = Hash.new
   for i in 1..user.count
     user.credit_distribution[:"u#{i}"] = [ n: 0.2, nm: 0.6, nml: 0.2 ]
