@@ -70,14 +70,31 @@ class Build < ConfigSlot
 
   def win?(random_number, token)
     if    token == :n
-      n_check(random_number)
+      if (n_check(random_number) == :win)
+        return :win
+      else
+        #loss_check
+        return :loss
+      end
     elsif token == :nm
-      n_check(random_number)
-      m_check(random_number)
+      if(n_check(random_number) == :win)
+        return :win
+      elsif(m_check(random_number) == :win)
+        return :win
+      else
+        return :loss
+      end
     elsif token == :nml
-      n_check(random_number)
-      m_check(random_number)
-      l_check(random_number)
+      if(n_check(random_number) == :win)
+        return :win
+      elsif(m_check(random_number) == :win)
+        return :win
+      elsif(l_check(random_number) == :win)
+        return:win
+      else
+        #lose_check
+        return :loss
+      end
     end
   end
 
