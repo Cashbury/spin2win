@@ -91,6 +91,7 @@ class Simulate
   # virtual reel
   game_build.output_virtual_reel
   game_build.output_interface_reel
+  game_build.output_pay_table
 
   #Simulation result feed, need some methods for statistical computations.
   output = File.new('output.html', 'w')
@@ -130,7 +131,7 @@ class Simulate
                                     output.puts "<p> Total value: #{game_build.business.log[key][:total_value]} </p>"
                                     output.puts "<p> Total value - total cost: #{game_build.business.log[key][:total_value] - game_build.business.log[key][:total_cost]} </p>"
                                     output.puts "<p> Number of users who won a prize: #{game_build.business.log[key][:user_winners].length} </p>"
-                          
+                                    output.puts "<br>" 
                                     }
 
 
@@ -138,43 +139,6 @@ class Simulate
   output.puts "<p> #{game_build.user.log.sort{|a,b| b[1][:wins] <=> a[1][:wins]}} </p>"
     
   output.close
-
-=begin
-  output.puts "<p>Total number of iterations: #{game_cycle.sample_size}"
-  output.puts "<p>Total number of wins: #{wins}</p>"
-  output.puts"<p>Total number of losses: #{losses}</p>"
-  # statistics need changed because of play method
-  output.puts "<p>Win probability is #{wins / Float(game_cycle.sample_size)}</p>"
-  output.puts "<p>Loss probability is #{losses / Float(game_cycle.sample_size)}</p><br>"
-  
-  output.puts "<p> N prize paylines' win count: #{game_build.n_payline_wins} </p>"
-  game_build.n_payline_wins.each { |key, value| #output.puts "<p> Theoretical probability for payline #{key}: #{game_build.n_payline_theoretical(key)}</p>"
-                                                #output.puts "<p> Experimental probability for payline #{key}: #{value / Float(game_cycle.sample_size)} </p>" 
-    output.print "<p> Variance percentage between theoretical and experimental results for payline #{key}: "
-    output.puts  "#{(game_build.n_payline_theoretical(key) - (value / Float(game_cycle.sample_size))) / game_build.n_payline_theoretical(key) * 100} percent. </p><br>" }
-
-  output.puts "<p> M prize paylines' win count: #{game_build.m_payline_wins} </p>"
-  game_build.m_payline_wins.each { |key, value| #output.puts "<p> Theoretical probability for payline #{key}: #{game_build.m_payline_theoretical(key)}</p>" 
-                                                #output.puts "<p> Experimental probability for payline #{key}: #{value / Float(game_cycle.sample_size)} </p>"
-      output.print "<p> Variance percentage between theoretical and experimental results for payline #{key}: "
-      output.puts  "#{(game_build.m_payline_theoretical(key) - (value / Float(game_cycle.sample_size))) / game_build.m_payline_theoretical(key) * 100} percent. </p><br>" }
-
-  output.puts "<p> L prize paylines' win count: #{game_build.l_payline_wins} </p>"
-  game_build.l_payline_wins.each { |key, value| #output.puts "<p> Theoretical probability for payline #{key}: #{game_build.l_payline_theoretical(key)}</p>"
-                                                #output.puts "<p> Experimental probability for payline #{key}: #{value / Float(game_cycle.sample_size)} </p>"
-      output.print "<p> Variance percentage between theoretical and experimental results for payline #{key}: "
-      output.puts  "#{(game_build.l_payline_theoretical(key) - (value / Float(game_cycle.sample_size))) / game_build.l_payline_theoretical(key) * 100} percent. </p><br>" }
-
-  output.close
-  
-  game_build.win_count_total
-=end
-  # simulation.report
-  # play feed, variance analysis, total cost to business, number of prizes granted
-  # for each prize from the business:
-  # number of prizes won by customers for a total cost of $
-  # etc. see lexicon
-
   end
 
   puts "#{time} seconds elapsed."

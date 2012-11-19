@@ -92,6 +92,19 @@ class Build < ConfigSlot
     output.puts "</p>"
   end
 
+### Pay table output
+  def output_pay_table
+    output = File.new('pay_table.html', 'w')
+    @@n.prize.each_key { |key| output.print "<p> Prize name: #{@@n.prize[key][:prize_name]}, Prize group: #{@@n.prize[key][:prize_group]}, Prize value: #{@@n.prize[key][:prize_value]}, "
+                               output.puts "Payline: #{@@symbol[@@n.symbol[key]]} #{@@symbol[@@n.symbol[key]]} #{@@symbol[@@n.symbol[key]]} </p>" }
+    @@m.prize.each_key { |key| output.print "<p> Prize name: #{@@m.prize[key][:prize_name]}, Prize group: #{@@m.prize[key][:prize_group]}, Prize value: #{@@m.prize[key][:prize_value]}, "
+                               output.puts  "Payline: #{@@symbol[@@m.symbol[key]]} #{@@symbol[@@m.symbol[key]]} #{@@symbol[@@m.symbol[key]]} </p>" }
+    @@l.prize.each_key { |key| output.print "<p> Prize name: #{@@l.prize[key][:prize_name]}, Prize group: #{@@l.prize[key][:prize_group]}, Prize value: #{@@l.prize[key][:prize_value]}, "
+                               output.puts "Payline: #{@@symbol[@@l.symbol[key]]} #{@@symbol[@@l.symbol[key]]} #{@@symbol[@@l.symbol[key]]} </p>" }
+
+    output.close
+  end
+
   def win?(random_number, token, user)
     if    token == :n
       if (n_check(random_number, user) == :win)

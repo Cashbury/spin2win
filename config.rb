@@ -77,15 +77,15 @@ class ConfigSlot
 
   # prize definitions
   for i in 1..n.prize_total
-    n.prize[:"n#{i}"] = { business_id: :b1, business_name: 'cashbury', prize_value: 5, prize_cost: 1,
+    n.prize[:"n#{i}"] = { business_id: :b1, business_name: 'cashbury', prize_name: "prize_n#{i}", prize_value: 5, prize_cost: 1,
                       prize_group: 'n', prize_type: 'item', max_spend: 1, max_quantity: 1 }
   end
   for i in 1..m.prize_total
-    m.prize[:"m#{i}"] = {  business_id: :b2, business_name: 'blue bottle', prize_value: 3, prize_cost: 1,
+    m.prize[:"m#{i}"] = {  business_id: :b2, business_name: 'blue bottle', prize_name: "prize_m#{i}", prize_value: 3, prize_cost: 1,
                       prize_group: 'm', prize_type: 'item', max_spend: 1, max_quantity: 1 }
   end
   for i in 1..l.prize_total
-    l.prize[:"l#{i}"] = {  business_id: :b3, business_name: 'starbucks', prize_value: 2, prize_cost: 1,
+    l.prize[:"l#{i}"] = {  business_id: :b3, business_name: 'starbucks', prize_name: "prize_l#{i}", prize_value: 2, prize_cost: 1,
                       prize_group: 'l', prize_type: 'credit', max_spend: 1, max_quantity: 1 }
   end
 
@@ -95,7 +95,6 @@ class ConfigSlot
     @@business
   end
   business.log = Hash.new
-  #for i in 1..3
   business.log[:b1] = { business_name: 'cashbury', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new}
   business.log[:b2] = { business_name: 'blue_bottle', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new}
   business.log[:b3] = { business_name: 'starbucks', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new}
