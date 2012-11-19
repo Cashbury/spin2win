@@ -217,7 +217,7 @@ class Build < ConfigSlot
     elsif (token == :nm)
       win?(random_number, :nm)  
     elsif (token == :n)
-      win?(random_number, :nm)
+      win?(random_number, :n)
     end
   end
   

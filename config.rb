@@ -42,7 +42,7 @@ class ConfigSlot
   symbol[:s6] = 'star'
   symbol[:s7] = 'x'
   
-  # 3) Define the paylines
+  # 3) Define the paylines, probability of occuring with the proper tokens
   n.payline_prob_array = [0.03, 0.02] 
   m.payline_prob_array = [0.04, 0.05]
   l.payline_prob_array = [0.06, 0.07]

@@ -28,7 +28,7 @@ class Simulate
   game_cycle.days = game_build.credit.total / game_build.credit.rate_per_day  # this implies a total of 400,000 credits issued. For statistical significance, this 10 day game cycle will need logged and computed upon n times.
   #for each user use their credits to play the game and keep track of wins/losses/prizes and then rank the users
   #also use this information to tally business cost, etc.
-  iterations = 2
+  iterations = 1
   wins = 0
   losses = 0
   game_cycle.wins = Hash.new
@@ -37,11 +37,10 @@ class Simulate
   game_cycle.m_payline_wins = Hash.new
   game_cycle.l_payline_wins = Hash.new
   for i in 1..iterations
-    #game_build = Build.new
     game_cycle.wins[:"gc#{i}"] = 0
     game_cycle.losses[:"gc#{i}"] = 0
     for j in 1..game_cycle.days
-      game_build.user.n_credits.each { |key, value| 
+      game_build.user.n_credits.each { |key, value|
         for k in 1..value 
           if (game_build.play(:n) == :win)
             game_cycle.wins[:"gc#{i}"] += 1
@@ -102,9 +101,29 @@ class Simulate
   output.puts "<p> Loss average: </p>"
 
   output.puts "<p> N prize paylines statistics: </p>"
-  output.puts "<p> M prize paylines statistics: </p>"
-  output.puts "<p> L prize paylines statistics: </p>"
+  game_cycle.n_payline_wins.each { |key1, value2|
+    # iterates through each game_cycle, 1 for now
+    game_cycle.n_payline_wins[key1].each { |key2, value2|
+      output.print "<p> Variance percentage between theoretical and experimental probability for payline #{key2}: "
+      output.puts  "#{(game_build.n_payline_theoretical(key2) - (value2 / Float(game_build.credit.total))) / game_build.n_payline_theoretical(key2) * 100} percent. </p>" }
+    }
 
+  output.puts "<p> M prize paylines statistics: </p>"
+  game_cycle.m_payline_wins.each { |key1, value2|
+    # iterates through each game_cycle, 1 for now
+    game_cycle.m_payline_wins[key1].each { |key2, value2|
+      output.print "<p> Variance percentage between theoretical and experimental probability for payline #{key2}: "
+      output.puts  "#{(game_build.m_payline_theoretical(key2) - (value2 / Float(game_build.credit.total*(game_build.credit.distribution[:nml]+game_build.credit.distribution[:nm])))) / game_build.m_payline_theoretical(key2) * 100} percent. </p>" }
+    }
+  
+  output.puts "<p> L prize paylines statistics (Note: the much lower probability is a result of only 20% of the credit distribution being :nml): </p>"
+  game_cycle.l_payline_wins.each { |key1, value2|
+    # iterates through each game_cycle, 1 for now
+    game_cycle.l_payline_wins[key1].each { |key2, value2|
+      output.print "<p> Variance percentage between theoretical and experimental probability for payline #{key2}: "
+      output.puts  "#{(game_build.l_payline_theoretical(key2) - (value2 / Float(game_build.credit.total*game_build.credit.distribution[:nml]) )) / game_build.l_payline_theoretical(key2)* 100} percent. </p>" }
+    }
+ 
   output.puts "<p> Business statistics: </p>"
   output.puts "<p> User statistics: </p>"
     
