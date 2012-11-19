@@ -92,28 +92,28 @@ class Build < ConfigSlot
     output.puts "</p>"
   end
 
-  def win?(random_number, token)
+  def win?(random_number, token, user)
     if    token == :n
-      if (n_check(random_number) == :win)
+      if (n_check(random_number, user) == :win)
         return :win
       else
         #loss_check
         return :loss
       end
     elsif token == :nm
-      if(n_check(random_number) == :win)
+      if(n_check(random_number, user) == :win)
         return :win
-      elsif(m_check(random_number) == :win)
+      elsif(m_check(random_number, user) == :win)
         return :win
       else
         return :loss
       end
     elsif token == :nml
-      if(n_check(random_number) == :win)
+      if(n_check(random_number, user) == :win)
         return :win
-      elsif(m_check(random_number) == :win)
+      elsif(m_check(random_number, user) == :win)
         return :win
-      elsif(l_check(random_number) == :win)
+      elsif(l_check(random_number, user) == :win)
         return:win
       else
         #lose_check
@@ -140,36 +140,36 @@ class Build < ConfigSlot
 
 ## The following methods check paylines for a win
   @@wins = 0
-  def n_check(random_number)
+  def n_check(random_number, user)
     @@n.virtual_reel_win_map.each {
       |key, value|
       if @@n.virtual_reel_win_map[key] === random_number
         #p "win with #{key} #{random_number} #{value}"
-        #@@wins = @@wins + 1
+        #@@user.win_types[user].push key
+        @@user.log[user][:wins] += 1 
+        @@user.log[user][:value] += @@n.prize[key][:prize_value]
         @@n.wins[key] = @@n.wins[key] + 1
         #puts "Prize #{key} won: #{@@n.prize[key]}"
         return :win
       end
     }
   end
-  def m_check(random_number)
+  def m_check(random_number, user)
     @@m.virtual_reel_win_map.each {
       |key, value|
       if @@m.virtual_reel_win_map[key] === random_number
-        #p "win with #{key}"
-        #@@wins = @@wins + 1
+        @@user.log[user][:wins]+= 1
         @@m.wins[key] = @@m.wins[key] + 1 
         #puts "Prize #{key} won: #{@@m.prize[key]}"
         return :win
       end
     }
   end
-  def l_check(random_number)
+  def l_check(random_number, user)
     @@l.virtual_reel_win_map.each {
       |key, value|
       if @@l.virtual_reel_win_map[key] === random_number
-        #p "win with #{key}"
-        #@@wins = @@wins + 1
+        @@user.log[user][:wins] += 1
         @@l.wins[key] = @@l.wins[key] + 1 
         #puts "Prize #{key} won: #{@@l.prize[key]}"
         return :win
@@ -210,14 +210,23 @@ class Build < ConfigSlot
   end
 =end
 
-  def play(token)
+  def play(token, user)
     random_number = SecureRandom.random_number(@@virtual_reel.range.max) 
     if (token == :nml)
-      win?(random_number, :nml)
+      if (win?(random_number, :nml, user) == :win)
+        return :win
+        #user,prize lookup and store, etc.
+      end
     elsif (token == :nm)
-      win?(random_number, :nm)  
+      if (win?(random_number, :nm, user) == :win)
+        return :win
+        #user,prize lookup and store, etc.
+      end
     elsif (token == :n)
-      win?(random_number, :n)
+      if (win?(random_number, :n, user) == :win)
+        return :win
+        #user,prize lookup and store, etc.
+      end
     end
   end
   

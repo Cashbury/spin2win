@@ -40,9 +40,9 @@ class Simulate
     game_cycle.wins[:"gc#{i}"] = 0
     game_cycle.losses[:"gc#{i}"] = 0
     for j in 1..game_cycle.days
-      game_build.user.n_credits.each { |key, value|
+      game_build.user.n_credits.each { |user, value|
         for k in 1..value 
-          if (game_build.play(:n) == :win)
+          if (game_build.play(:n, user) == :win)
             game_cycle.wins[:"gc#{i}"] += 1
           else
             game_cycle.losses[:"gc#{i}"]+=1
@@ -50,9 +50,9 @@ class Simulate
         end
       }
 
-      game_build.user.nm_credits.each { |key, value| 
+      game_build.user.nm_credits.each { |user, value| 
         for k in 1..value 
-          if (game_build.play(:nm) == :win)
+          if (game_build.play(:nm, user) == :win)
             game_cycle.wins[:"gc#{i}"] += 1
           else
             game_cycle.losses[:"gc#{i}"]+= 1
@@ -60,9 +60,9 @@ class Simulate
         end
       }
                                       
-      game_build.user.nml_credits.each { |key, value| 
+      game_build.user.nml_credits.each { |user, value| 
         for k in 1..value 
-          if (game_build.play(:nml) == :win)
+          if (game_build.play(:nml, user) == :win)
             game_cycle.wins[:"gc#{i}"]+=1
           else
             game_cycle.losses[:"gc#{i}"] +=1
@@ -74,13 +74,12 @@ class Simulate
     game_cycle.n_payline_wins[:"gc#{i}"] = game_build.n_payline_wins
     game_cycle.m_payline_wins[:"gc#{i}"] = game_build.m_payline_wins
     game_cycle.l_payline_wins[:"gc#{i}"] = game_build.l_payline_wins
-    game_build.reset # resets class variables
+    game_build.reset # resets class variables, @@user may need reset when further iterations employed
   end
 
   puts game_cycle.n_payline_wins
   puts game_cycle.m_payline_wins
   puts game_cycle.l_payline_wins
-
 
   puts "Total credits used in each game cycle: #{game_build.credit.rate_per_day * game_cycle.days}"
 
@@ -125,10 +124,12 @@ class Simulate
     }
  
   output.puts "<p> Business statistics: </p>"
-  output.puts "<p> User statistics: </p>"
+
+  output.puts "<p> User log, descending order by number of wins: </p>"
+  output.puts "<p> #{game_build.user.log.sort{|a,b| b[1][:wins] <=> a[1][:wins]}} </p>"
     
   output.close
- 
+
 =begin
   output.puts "<p>Total number of iterations: #{game_cycle.sample_size}"
   output.puts "<p>Total number of wins: #{wins}</p>"

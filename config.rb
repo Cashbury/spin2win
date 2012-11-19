@@ -77,16 +77,16 @@ class ConfigSlot
 
   # prize definitions
   for i in 1..n.prize_total
-    n.prize[:"n#{i}"] = [ business_name: 'cashbury', prize_value: 5, prize_cost: 1,
-                      prize_group: 'n', prize_type: 'item', max_spend: 1, max_quantity: 1 ]
+    n.prize[:"n#{i}"] = { business_name: 'cashbury', prize_value: 5, prize_cost: 1,
+                      prize_group: 'n', prize_type: 'item', max_spend: 1, max_quantity: 1 }
   end
   for i in 1..m.prize_total
-    m.prize[:"m#{i}"] = [  business_name: 'blue bottle', prize_value: 3, prize_cost: 1,
-                      prize_group: 'm', prize_type: 'item', max_spend: 1, max_quantity: 1 ]
+    m.prize[:"m#{i}"] = {  business_name: 'blue bottle', prize_value: 3, prize_cost: 1,
+                      prize_group: 'm', prize_type: 'item', max_spend: 1, max_quantity: 1 }
   end
   for i in 1..l.prize_total
-    l.prize[:"l#{i}"] = [  business_name: 'starbucks', prize_value: 2, prize_cost: 1,
-                      prize_group: 'l', prize_type: 'credit', max_spend: 1, max_quantity: 1 ]
+    l.prize[:"l#{i}"] = {  business_name: 'starbucks', prize_value: 2, prize_cost: 1,
+                      prize_group: 'l', prize_type: 'credit', max_spend: 1, max_quantity: 1 }
   end
 
   # 5) Assign or auto-assign the prize to an available payline in the group
@@ -101,7 +101,7 @@ class ConfigSlot
   user.n_credits = Hash.new
   user.nm_credits = Hash.new
   user.nml_credits = Hash.new
-  user.win_types = Hash.new
+  user.log = Hash.new
   @@credit = OpenStruct.new
   def self.credit
     @@credit
@@ -116,7 +116,7 @@ class ConfigSlot
     user.n_credits[:"u#{i}"]   = credit.rate_per_day / user.count * credit.distribution[:n]
     user.nm_credits[:"u#{i}"]  = credit.rate_per_day / user.count * credit.distribution[:nm]
     user.nml_credits[:"u#{i}"] = credit.rate_per_day / user.count * credit.distribution[:nml]
-    user.win_types[:"u#{i}"] = Array.new # push payline of win here
+    user.log[:"u#{i}"] = {wins: 0, value: 0}
   end
   
 
