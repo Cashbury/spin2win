@@ -138,7 +138,7 @@ class Build < ConfigSlot
     @@l.payline_prob[payline_key]
   end
 
-## The following methods check paylines for a win
+## The following methods check paylines for a win, method abstraction
   @@wins = 0
   def n_check(random_number, user)
     @@n.virtual_reel_win_map.each {
@@ -149,7 +149,13 @@ class Build < ConfigSlot
         @@user.log[user][:wins] += 1 
         @@user.log[user][:value] += @@n.prize[key][:prize_value]
         @@n.wins[key] = @@n.wins[key] + 1
-        #puts "Prize #{key} won: #{@@n.prize[key]}"
+        @@business.log[@@n.prize[key][:business_id]][:total_value] += @@n.prize[key][:prize_value]
+        @@business.log[@@n.prize[key][:business_id]][:total_cost] += @@n.prize[key][:prize_cost]
+        @@business.log[@@n.prize[key][:business_id]][:prizes_issued] += 1 
+        unless(@@business.log[@@n.prize[key][:business_id]][:user_winners].include?(user) )
+           @@business.log[@@n.prize[key][:business_id]][:user_winners].push(user)
+        end
+       #puts "Prize #{key} won: #{@@n.prize[key]}"
         return :win
       end
     }
@@ -160,7 +166,13 @@ class Build < ConfigSlot
       if @@m.virtual_reel_win_map[key] === random_number
         @@user.log[user][:wins]+= 1
         @@m.wins[key] = @@m.wins[key] + 1 
-        #puts "Prize #{key} won: #{@@m.prize[key]}"
+        @@business.log[@@m.prize[key][:business_id]][:total_value] += @@m.prize[key][:prize_value]
+        @@business.log[@@m.prize[key][:business_id]][:total_cost] += @@m.prize[key][:prize_cost]
+        @@business.log[@@m.prize[key][:business_id]][:prizes_issued] += 1 
+        unless(@@business.log[@@m.prize[key][:business_id]][:user_winners].include?(user) )
+           @@business.log[@@m.prize[key][:business_id]][:user_winners].push(user)
+        end
+       #puts "Prize #{key} won: #{@@m.prize[key]}"
         return :win
       end
     }
@@ -171,7 +183,13 @@ class Build < ConfigSlot
       if @@l.virtual_reel_win_map[key] === random_number
         @@user.log[user][:wins] += 1
         @@l.wins[key] = @@l.wins[key] + 1 
-        #puts "Prize #{key} won: #{@@l.prize[key]}"
+        @@business.log[@@l.prize[key][:business_id]][:total_value] += @@l.prize[key][:prize_value]
+        @@business.log[@@l.prize[key][:business_id]][:total_cost] += @@l.prize[key][:prize_cost]
+        @@business.log[@@l.prize[key][:business_id]][:prizes_issued] += 1 
+        unless(@@business.log[@@l.prize[key][:business_id]][:user_winners].include?(user) )
+           @@business.log[@@l.prize[key][:business_id]][:user_winners].push(user)
+        end
+      #puts "Prize #{key} won: #{@@l.prize[key]}"
         return :win
       end
     }
@@ -197,6 +215,9 @@ class Build < ConfigSlot
   end
   def credit
     @@credit
+  end
+  def business
+    @@business
   end
 
   def reset

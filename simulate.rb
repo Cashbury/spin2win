@@ -96,8 +96,8 @@ class Simulate
   output = File.new('output.html', 'w')
   output.puts "<p> #{game_cycle.days} day game cycle played #{iterations} times.</p>"
  
-  output.puts "<p> Win average: </p>"
-  output.puts "<p> Loss average: </p>"
+  #output.puts "<p> Win average: </p>"
+  #output.puts "<p> Loss average: </p>"
 
   output.puts "<p> N prize paylines statistics: </p>"
   game_cycle.n_payline_wins.each { |key1, value2|
@@ -124,6 +124,15 @@ class Simulate
     }
  
   output.puts "<p> Business statistics: </p>"
+  game_build.business.log.each_key { |key| 
+                                    output.puts "<p> Business #{key}, #{game_build.business.log[key][:business_name]} </p>"
+                                    output.puts "<p> Total cost: #{game_build.business.log[key][:total_cost]} </p>"
+                                    output.puts "<p> Total value: #{game_build.business.log[key][:total_value]} </p>"
+                                    output.puts "<p> Total value - total cost: #{game_build.business.log[key][:total_value] - game_build.business.log[key][:total_cost]} </p>"
+                                    output.puts "<p> Number of users who won a prize: #{game_build.business.log[key][:user_winners].length} </p>"
+                          
+                                    }
+
 
   output.puts "<p> User log, descending order by number of wins: </p>"
   output.puts "<p> #{game_build.user.log.sort{|a,b| b[1][:wins] <=> a[1][:wins]}} </p>"
