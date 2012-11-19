@@ -50,13 +50,13 @@ class Build < ConfigSlot
   # generate all symbol combinations, even probability for all losing combinations, 
   loseline = OpenStruct.new
   loseline.probability_total = 1 - (@@n.payline_prob_array.inject(:+) + @@m.payline_prob_array.inject(:+) + @@l.payline_prob_array.inject(:+)) 
-  puts "loseline probability: #{loseline.probability_total}"
+  #puts "loseline probability: #{loseline.probability_total}"
   loseline.total_number_of = @@symbol.keys.length ** 3 - @@n.prize_total - @@m.prize_total - @@l.prize_total
-  puts "total number of loselines: #{loseline.total_number_of}"
+  #puts "total number of loselines: #{loseline.total_number_of}"
   loseline.individual_probability = loseline.probability_total / Float(loseline.total_number_of)
-  puts "individual probability for each loseline: #{loseline.individual_probability}"
+  #puts "individual probability for each loseline: #{loseline.individual_probability}"
   loseline.reel_length_individual = Integer(virtual_stops * loseline.individual_probability)
-  puts loseline.reel_length_individual
+  #puts loseline.reel_length_individual
   @@virtual_reel_lose_map = Hash.new
   def self.virtual_reel_lose_map
     @@virtual_reel_lose_map
@@ -145,7 +145,7 @@ class Build < ConfigSlot
       |key, value|
       if @@n.virtual_reel_win_map[key] === random_number
         #p "win with #{key} #{random_number} #{value}"
-        @@wins = @@wins + 1
+        #@@wins = @@wins + 1
         @@n.wins[key] = @@n.wins[key] + 1
         #puts "Prize #{key} won: #{@@n.prize[key]}"
         return :win
@@ -157,7 +157,7 @@ class Build < ConfigSlot
       |key, value|
       if @@m.virtual_reel_win_map[key] === random_number
         #p "win with #{key}"
-        @@wins = @@wins + 1
+        #@@wins = @@wins + 1
         @@m.wins[key] = @@m.wins[key] + 1 
         #puts "Prize #{key} won: #{@@m.prize[key]}"
         return :win
@@ -169,7 +169,7 @@ class Build < ConfigSlot
       |key, value|
       if @@l.virtual_reel_win_map[key] === random_number
         #p "win with #{key}"
-        @@wins = @@wins + 1
+        #@@wins = @@wins + 1
         @@l.wins[key] = @@l.wins[key] + 1 
         #puts "Prize #{key} won: #{@@l.prize[key]}"
         return :win
@@ -199,6 +199,12 @@ class Build < ConfigSlot
     @@credit
   end
 
+  def reset
+    @@n.wins = Hash.new(0)
+    @@m.wins = Hash.new(0)
+    @@l.wins = Hash.new(0)
+  end
+
 =begin
   def prize_check
   end
@@ -210,6 +216,8 @@ class Build < ConfigSlot
       win?(random_number, :nml)
     elsif (token == :nm)
       win?(random_number, :nm)  
+    elsif (token == :n)
+      win?(random_number, :nm)
     end
   end
   

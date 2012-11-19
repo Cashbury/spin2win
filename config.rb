@@ -106,6 +106,7 @@ class ConfigSlot
   def self.credit
     @@credit
   end
+  credit.total = 400000
   credit.distribution = Hash.new
   credit.distribution[:n] = 0.2 
   credit.distribution[:nm] = 0.6

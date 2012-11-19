@@ -6,7 +6,6 @@ class Simulate
 
   time = Benchmark.realtime do # assume single processor and use realtime, n processors at 100% = realtime/n
 
-  game_build = Build.new
   game_cycle = OpenStruct.new
 
   # 1) set the number of spins with statistical significance in mind
@@ -25,48 +24,70 @@ class Simulate
 =end
 
 # build statistics around this play style
-  game_cycle.days = 10  # this implies a total of 100,000 credits issued. For statistical significance, this 10 day cycle will need logged and computed upon n times.
+  game_build = Build.new
+  game_cycle.days = game_build.credit.total / game_build.credit.rate_per_day  # this implies a total of 400,000 credits issued. For statistical significance, this 10 day game cycle will need logged and computed upon n times.
   #for each user use their credits to play the game and keep track of wins/losses/prizes and then rank the users
   #also use this information to tally business cost, etc.
-  iterations = 1
+  iterations = 2
   wins = 0
   losses = 0
+  game_cycle.wins = Hash.new
+  game_cycle.losses = Hash.new
+  game_cycle.n_payline_wins = Hash.new
+  game_cycle.m_payline_wins = Hash.new
+  game_cycle.l_payline_wins = Hash.new
   for i in 1..iterations
-    for i in 1..game_cycle.days
+    #game_build = Build.new
+    game_cycle.wins[:"gc#{i}"] = 0
+    game_cycle.losses[:"gc#{i}"] = 0
+    for j in 1..game_cycle.days
       game_build.user.n_credits.each { |key, value| 
-        for i in 1..value 
+        for k in 1..value 
           if (game_build.play(:n) == :win)
-            wins += 1
+            game_cycle.wins[:"gc#{i}"] += 1
           else
-            losses +=1
+            game_cycle.losses[:"gc#{i}"]+=1
           end
         end
       }
 
       game_build.user.nm_credits.each { |key, value| 
-        for i in 1..value 
+        for k in 1..value 
           if (game_build.play(:nm) == :win)
-            wins+=1
+            game_cycle.wins[:"gc#{i}"] += 1
           else
-            losses += 1
+            game_cycle.losses[:"gc#{i}"]+= 1
           end
         end
       }
                                       
       game_build.user.nml_credits.each { |key, value| 
-        for i in 1..value 
+        for k in 1..value 
           if (game_build.play(:nml) == :win)
-            wins+=1
+            game_cycle.wins[:"gc#{i}"]+=1
           else
-            losses +=1
+            game_cycle.losses[:"gc#{i}"] +=1
           end
         end
       }
     end
+    # do some statistics during iteration, payline probability, game cycle, etc.
+    game_cycle.n_payline_wins[:"gc#{i}"] = game_build.n_payline_wins
+    game_cycle.m_payline_wins[:"gc#{i}"] = game_build.m_payline_wins
+    game_cycle.l_payline_wins[:"gc#{i}"] = game_build.l_payline_wins
+    game_build.reset # resets class variables
   end
 
-  puts wins
-  puts losses
+  puts game_cycle.n_payline_wins
+  puts game_cycle.m_payline_wins
+  puts game_cycle.l_payline_wins
+
+
+  puts "Total credits used in each game cycle: #{game_build.credit.rate_per_day * game_cycle.days}"
+
+  # Output total wins and losses
+  game_cycle.wins.each { |key, value| puts "Game cycle #{key} total wins: #{value}" 
+                                      puts "Game cycle #{key} total losses: #{game_cycle.losses[key]}"}
 
   # 3) Output the simulation result feed and analysis interface and virtual reel
   # virtual reel
