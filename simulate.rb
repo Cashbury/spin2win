@@ -127,9 +127,10 @@ class Simulate
   output.puts "<p> Business statistics: </p>"
   game_build.business.log.each_key { |key| 
                                     output.puts "<p> Business #{key}, #{game_build.business.log[key][:business_name]} </p>"
-                                    output.puts "<p> Total cost: #{game_build.business.log[key][:total_cost]} </p>"
+                                    output.puts "<p> Total cost of prizes: #{game_build.business.log[key][:total_cost]} </p>"
                                     output.puts "<p> Total value: #{game_build.business.log[key][:total_value]} </p>"
                                     output.puts "<p> Total value - total cost: #{game_build.business.log[key][:total_value] - game_build.business.log[key][:total_cost]} </p>"
+                                    output.puts "<p> Total cost of campaign:  #{game_build.business.log[key][:total_value] * game_build.business.log[key][:gross_margin]} </p>"
                                     output.puts "<p> Number of users who won a prize: #{game_build.business.log[key][:user_winners].length} </p>"
                                     output.puts "<br>" 
                                     }

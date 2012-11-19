@@ -95,9 +95,9 @@ class ConfigSlot
     @@business
   end
   business.log = Hash.new
-  business.log[:b1] = { business_name: 'cashbury', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new}
-  business.log[:b2] = { business_name: 'blue_bottle', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new}
-  business.log[:b3] = { business_name: 'starbucks', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new}
+  business.log[:b1] = { business_name: 'cashbury', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new, gross_margin: 0.25}
+  business.log[:b2] = { business_name: 'blue_bottle', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new, gross_margin: 0.3}
+  business.log[:b3] = { business_name: 'starbucks', prizes_issued: 0, total_value: 0, total_cost: 0, user_winners: Array.new, gross_margin: 0.2}
 
   # 5) Assign or auto-assign the prize to an available payline in the group
   # from form in View, assign prize to payline :n1, etc.
